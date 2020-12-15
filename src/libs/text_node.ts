@@ -1,63 +1,86 @@
 import { rgba2hex } from './rgba2hex';
+import { Color, FontStyle, FontWeight, Text, TextAlign, TextStyle } from '@bridged.xyz/flutter-builder';
 
-function inspectTextNode(node: TextNode): TextModel {
+function inspectTextNode(node: TextNode): Text {
   const fontName = node.fontName as FontName;
   const font = fontName.style.split(' ');
-  const fontWeight = font[0];
-  const fontStyle = font.length > 1 ? font[1] : 'Regular';
-  const letterSpacing = node.letterSpacing as LetterSpacing;
+  const figmaFontStyle = font.length > 1 ? font[1] : 'Regular';
+
+  let fontWeight = FontWeight.normal;
+  switch (font[0]) {
+    case 'Regular':
+      fontWeight = FontWeight.normal;
+      break;
+    case 'Thin':
+      fontWeight = FontWeight.w200;
+      break;
+    case 'Light':
+      fontWeight = FontWeight.w300;
+      break;
+    case 'Medium':
+      fontWeight = FontWeight.w500;
+      break;
+    case 'Bold':
+      fontWeight = FontWeight.w700;
+      break;
+    case 'Black':
+      fontWeight = FontWeight.w900;
+      break;
+    default:
+      break;
+  }
+
+  let fontStyle = FontStyle.normal;
+  switch (figmaFontStyle) {
+    case 'Regular':  
+      fontStyle = FontStyle.normal;
+      break;
+
+    case 'Italic':
+      fontStyle = FontStyle.italic;
+      break;
+  
+    default:
+      break;
+  }
+
+  let textAlign = TextAlign.center;
+  switch (node.textAlignHorizontal) {
+    case 'LEFT':
+      textAlign = TextAlign.left;
+      break;
+    case 'RIGHT':
+      textAlign = TextAlign.right;
+      break;
+    case 'JUSTIFIED':
+      textAlign = TextAlign.justify;
+      break;
+  }
+
   const fills = node.fills as ReadonlyArray<Paint>;
-  let color = '000000';
+  let color = 'FFFFFFFF';
   if (fills.length == 1) {
       const fill = fills[0] as SolidPaint;
-      color = rgba2hex([fill.color.r, fill.color.g, fill.color.b]).toUpperCase();
+      color = rgba2hex([1, fill.color.r, fill.color.g, fill.color.b]).toUpperCase();
   }
-  let textStyle: FlutterTextStyle = {
+
+  // const dropShadow = node.effects.filter(effect => effect.type == 'DROP_SHADOW');
+
+  let textStyle = new TextStyle({
     fontSize: node.fontSize as number,
     fontWeight: fontWeight,
     fontStyle: fontStyle,
-    decoration: node.textDecoration as string,
-    letterSpacing: letterSpacing.value,
-    color: color,
-    // height: number,
-    shadows: node.effects,
-  };
-  let textModel: TextModel = {
-    value: node.characters,
-    textAlign: node.textAlignHorizontal,
-    textDirection: node.textDecoration as string,
+    // decoration: node.textDecoration as string,
+    color: Color.fromHex(color),
+  });
+  let textWidget = new Text(node.characters, {
+    textAlign: textAlign,
     style: textStyle,
-    locale: 'ja',
-    softWrap: true,
-  };
+  });
 
-  return textModel;
-}
-
-type TextModel = {
-  value: string,
-  style: FlutterTextStyle,
-  textAlign: string,
-  textDirection: string,
-  locale: string,
-  softWrap: boolean,
-}
-  
-type FlutterTextStyle = {
-  color: string,
-  fontSize: number,
-  fontWeight: string,
-  fontStyle: string,
-  letterSpacing: number,
-  // height: number,
-  shadows: ReadonlyArray<Effect>,
-  decoration: string,
-  // decorationColor: string,
-  // decorationStyle: string
+  return textWidget;
 }
 
 export {
-  inspectTextNode,
-  TextModel,
-  FlutterTextStyle
+  inspectTextNode
 }
