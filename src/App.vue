@@ -2,13 +2,14 @@
   <div>
     <h2>Flutter Inspector</h2>
     <div>
-      <pre id="inspect">{{ inspect }}</pre>
+      <highlightjs language='dart' class="dart" :code="inspect" />
     </div>
   </div>
 </template>
 
 <script>
 import { rgba2hex } from './libs/rgba2hex';
+import 'highlight.js/styles/stackoverflow-dark.css';
 
 export default {
   name: "App",
@@ -30,7 +31,7 @@ export default {
       if (message.data.pluginMessage.type == 'inspect') {
         let params = "";
         const data = message.data.pluginMessage.data;
-        console.log(data.code);
+
         this.inspect = data.code;
       }
     };
@@ -43,6 +44,7 @@ export default {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-align: center;
   margin-top: 60px;
 }
 
