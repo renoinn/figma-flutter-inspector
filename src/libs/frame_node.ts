@@ -1,5 +1,5 @@
 import { rgba2hex } from './rgba2hex';
-import { Column, CrossAxisAlignment, MainAxisAlignment, MainAxisSize, Row, Stack } from '@bridged.xyz/flutter-builder';
+import { Column, CrossAxisAlignment, MainAxisAlignment, Row, Stack } from '@bridged.xyz/flutter-builder';
 
 function inspectFrameNode(node: FrameNode): Column | Row | Stack {
 	let widget;

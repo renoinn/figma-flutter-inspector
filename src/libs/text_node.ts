@@ -61,7 +61,7 @@ function inspectTextNode(node: TextNode): Text {
   let color = 'FFFFFFFF';
   if (fills.length == 1) {
       const fill = fills[0] as SolidPaint;
-      color = rgba2hex([1, fill.color.r, fill.color.g, fill.color.b]).toUpperCase();
+      color = rgba2hex([fill.opacity, fill.color.r, fill.color.g, fill.color.b]).toUpperCase();
   }
 
   // const dropShadow = node.effects.filter(effect => effect.type == 'DROP_SHADOW');
